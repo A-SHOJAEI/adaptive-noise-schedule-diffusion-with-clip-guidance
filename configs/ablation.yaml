@@ -1,0 +1,88 @@
+# Ablation study: baseline without adaptive scheduling
+
+# Model settings - FIXED SCHEDULE BASELINE
+model:
+  diffusion_model: "runwayml/stable-diffusion-v1-5"
+  clip_model: "openai/clip-vit-base-patch32"
+  predictor_hidden_dim: 256
+  predictor_num_layers: 3
+  use_adaptive_schedule: false  # KEY DIFFERENCE: No adaptive scheduling
+  num_inference_steps: 50
+  adaptive_inference_steps: 50  # Same as num_inference_steps (no reduction)
+
+# Training settings
+training:
+  num_epochs: 50
+  batch_size: 8
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  gradient_clip_norm: 1.0
+  warmup_steps: 1000
+  mixed_precision: true
+  gradient_accumulation_steps: 4
+
+# Optimizer and scheduler
+optimizer:
+  type: "adamw"
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+
+scheduler:
+  type: "cosine"
+  num_cycles: 0.5
+  min_lr: 0.000001
+
+# RLHF settings - DISABLED for baseline
+rlhf:
+  enabled: false  # KEY DIFFERENCE: No RLHF
+  reward_scale: 0.0
+  kl_penalty: 0.0
+  preference_margin: 0.0
+
+# Data settings
+data:
+  dataset_name: "conceptual_captions"
+  subset: "unlabeled"
+  max_samples_train: 100000
+  max_samples_val: 5000
+  image_size: 512
+  num_workers: 4
+  prefetch_factor: 2
+
+# CLIP guidance settings - Standard guidance only
+clip_guidance:
+  enabled: true
+  guidance_scale: 7.5
+  clip_guidance_scale: 0.0  # KEY DIFFERENCE: No CLIP guidance scaling
+  target_clip_score: 0.28
+
+# Early stopping
+early_stopping:
+  patience: 10
+  min_delta: 0.001
+  monitor: "val_clip_score"
+  mode: "max"
+
+# Checkpointing
+checkpoint:
+  save_dir: "checkpoints"
+  save_every_n_epochs: 5
+  keep_last_n: 3
+
+# Logging
+logging:
+  log_every_n_steps: 50
+  use_mlflow: true
+  experiment_name: "baseline-fixed-schedule"
+
+# Evaluation
+evaluation:
+  num_samples: 1000
+  fid_batch_size: 50
+  compute_fid: true
+  compute_clip_score: true
+  compute_inference_time: true
+
+# Reproducibility
+seed: 42
+deterministic: true
