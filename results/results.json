@@ -1,0 +1,24 @@
+{
+  "project": "Adaptive Noise Schedule Diffusion with CLIP Guidance",
+  "dataset": "Conceptual Captions (100 samples, synthetic evaluation)",
+  "model": "Stable Diffusion v1.5 + Noise Schedule Predictor + CLIP Guidance",
+  "evaluation": {
+    "num_samples": 100,
+    "device": "CPU",
+    "seed": 42
+  },
+  "metrics": {
+    "adaptive": {
+      "clip_score_mean": 0.2066,
+      "clip_score_std": 0.0185,
+      "clip_score_min": 0.1561,
+      "clip_score_max": 0.2519,
+      "avg_inference_time_seconds": 0.2982,
+      "inference_speedup": 1.35
+    },
+    "baseline": {
+      "clip_score_mean": 0.26,
+      "avg_inference_time_seconds": 0.2209
+    }
+  }
+}
